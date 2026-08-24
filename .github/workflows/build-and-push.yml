@@ -1,0 +1,30 @@
+name: Build and push SuperSync image
+
+on:
+  schedule:
+    # Daily at 06:00 UTC — tracks upstream master, which has no release tags.
+    - cron: '0 6 * * *'
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - build.sh
+      - .github/workflows/build-and-push.yml
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        env:
+          PUSH: 'true'
+          IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/supersync
+        run: ./build.sh

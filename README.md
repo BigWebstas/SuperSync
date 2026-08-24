@@ -25,6 +25,17 @@ The script does a shallow clone of upstream `master` into a temp dir and builds 
 upstream's own `packages/super-sync-server/Dockerfile` unmodified — nothing here forks
 or patches their source.
 
+## Automated builds
+
+`.github/workflows/build-and-push.yml` rebuilds and pushes daily (06:00 UTC) and on
+manual dispatch, tracking upstream `master`. It needs two repo secrets:
+
+- `DOCKERHUB_USERNAME` — your Docker Hub username
+- `DOCKERHUB_TOKEN` — a Docker Hub access token (Account Settings → Security →
+  New Access Token; needs Read & Write)
+
+The image is pushed to `<DOCKERHUB_USERNAME>/supersync`.
+
 ## Running
 
 ```bash
