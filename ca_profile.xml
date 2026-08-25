@@ -1,0 +1,13 @@
+<CommunityApplications>
+  <!-- Required profile -->
+  <Profile>
+This repository publishes a Community Applications template for **SuperSync**, an unofficial, publicly-rebuilt Docker image of [Super Productivity](https://super-productivity.com)'s own sync backend server.
+
+Upstream (`super-productivity/super-productivity`) only ships this server as a **private** GHCR image, so this repo rebuilds it unmodified from their public source (`packages/super-sync-server`) and pushes it to Docker Hub at `webstas/supersync`, tracking the `master` branch daily.
+
+For support, please open an issue on the [GitHub repository](https://github.com/BigWebstas/SuperSync/issues).
+  </Profile>
+
+  <WebPage>https://github.com/BigWebstas/SuperSync</WebPage>
+
+</CommunityApplications>

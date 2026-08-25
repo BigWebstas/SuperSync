@@ -49,6 +49,22 @@ See upstream's
 [env.example](https://github.com/super-productivity/super-productivity/blob/master/packages/super-sync-server/env.example)
 for the full list of supported environment variables.
 
+## Unraid
+
+This repo ships a Community Applications template at
+[`templates/supersync.xml`](templates/supersync.xml), plus a
+[`ca_profile.xml`](ca_profile.xml) describing the repo, as required by
+[ca.unraid.net/submit](https://ca.unraid.net/submit).
+
+To use it before/without an official CA listing, add this repo as a template
+repository in the Community Applications plugin (Apps → Settings → Template
+Repositories): `https://github.com/BigWebstas/SuperSync`.
+
+SuperSync needs its own PostgreSQL 16 database — the template does not bundle
+one. Install a Postgres container first (e.g. the official `postgres:16-alpine`
+image via a separate CA template), create a database/user for SuperSync, then
+fill in the **Database URL** field with the resulting connection string.
+
 ## Notes
 
 - No Terms of Service / privacy policy is baked in. Upstream deliberately ships none —

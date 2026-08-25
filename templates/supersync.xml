@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>SuperSync</Name>
+  <Repository>webstas/supersync:latest</Repository>
+  <Registry>https://hub.docker.com/r/webstas/supersync</Registry>
+  <Network>bridge</Network>
+
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+
+  <Icon>https://raw.githubusercontent.com/super-productivity/super-productivity/master/src/assets/icons/apple-touch-icon.png</Icon>
+
+  <!-- NOTE: The port in the entry ALWAYS refers to the container port, not the host port-->
+  <WebUI>http://[IP]:[PORT:1900]/</WebUI>
+
+  <Overview>
+SuperSync is the self-hostable sync backend for Super Productivity (https://super-productivity.com), letting you sync your tasks/notes across devices without relying on Dropbox/WebDAV or the hosted service.
+
+Upstream (super-productivity/super-productivity) only publishes this image to a **private** GHCR registry (see https://github.com/super-productivity/super-productivity/issues/6225), so this is an unofficial public rebuild of the same, unmodified source (packages/super-sync-server), pushed daily to Docker Hub.
+
+REQUIRES A SEPARATE POSTGRESQL 16 DATABASE — this template does not bundle one. Install a Postgres container first (e.g. from Community Applications), create a database/user for SuperSync, then point the "Database URL" variable below at it.
+
+There are no upstream release tags — this image tracks the `master` branch and has no stability guarantee. Pin to a specific `latest`-alternative sha tag (see the Docker Hub tags list) rather than `latest` for anything you care about staying stable.
+
+No Terms of Service / privacy policy is baked in; see the PRIVACY_* variables in upstream's env.example if you need one generated for your deployment.
+  </Overview>
+
+  <Support>https://github.com/BigWebstas/SuperSync/issues</Support>
+  <Project>https://github.com/BigWebstas/SuperSync</Project>
+
+  <TemplateURL>https://raw.githubusercontent.com/BigWebstas/SuperSync/main/templates/supersync.xml</TemplateURL>
+  <ReadMe>https://raw.githubusercontent.com/BigWebstas/SuperSync/main/README.md</ReadMe>
+
+  <Category>Productivity:</Category>
+
+  <ExtraSearchTerms>super productivity task sync todo</ExtraSearchTerms>
+
+  <Requires>A separate PostgreSQL 16 (or compatible) database, reachable from this container, is required before starting.</Requires>
+
+  <Date>2026-08-25</Date>
+
+  <MinVer>6.1</MinVer>
+  <MaxVer>7.3</MaxVer>
+
+  <License>GPLv3</License>
+
+  <!-- v2 templates should define ports/paths/variables with Config entries -->
+  <Config Name="WebUI" Target="1900" Default="1900" Mode="tcp" Description="Port the server listens on." Type="Port" Display="always" Required="true" Mask="false">1900</Config>
+  <Config Name="Data" Target="/app/data" Default="/mnt/user/appdata/supersync" Mode="rw" Description="Persistent app data directory." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/supersync</Config>
+
+  <Config Name="Database URL" Target="DATABASE_URL" Default="" Mode="" Description="Postgres 16 connection string for a database you create/manage separately, e.g. postgresql://supersync:PASSWORD@POSTGRES_IP:5432/supersync?connection_limit=60&amp;pool_timeout=10 (the connection_limit param is important, see Overview)." Type="Variable" Display="always" Required="true" Mask="true"></Config>
+  <Config Name="JWT Secret" Target="JWT_SECRET" Default="" Mode="" Description="Secret used to sign auth tokens, minimum 32 characters. Generate with: openssl rand -base64 32" Type="Variable" Display="always" Required="true" Mask="true"></Config>
+  <Config Name="Public URL" Target="PUBLIC_URL" Default="http://[IP]:[PORT:1900]" Mode="" Description="URL your users/devices use to reach this server, with protocol. Used in verification/magic-link emails. MUST start with https:// unless you also set Node Env below to something other than production." Type="Variable" Display="always" Required="true" Mask="false">http://[IP]:[PORT:1900]</Config>
+
+  <Config Name="CORS Origins" Target="CORS_ORIGINS" Default="https://app.super-productivity.com" Mode="" Description="Comma-separated list of origins allowed to call this server (add your self-hosted frontend URL if applicable)." Type="Variable" Display="advanced" Required="false" Mask="false">https://app.super-productivity.com</Config>
+  <Config Name="WebAuthn RP ID" Target="WEBAUTHN_RP_ID" Default="localhost" Mode="" Description="Relying-party ID for passkey login: your domain, without protocol or port. Changing later invalidates existing passkeys." Type="Variable" Display="advanced" Required="false" Mask="false">localhost</Config>
+  <Config Name="WebAuthn Origin" Target="WEBAUTHN_ORIGIN" Default="http://[IP]:[PORT:1900]" Mode="" Description="Where users reach the auth UI, with protocol. Normally the same as Public URL." Type="Variable" Display="advanced" Required="false" Mask="false">http://[IP]:[PORT:1900]</Config>
+  <Config Name="Node Env" Target="NODE_ENV" Default="production" Mode="" Description="Set to something other than 'production' to allow http:// Public URLs (e.g. for LAN-only/testing use)." Type="Variable" Display="advanced" Required="false" Mask="false">production</Config>
+  <Config Name="Run Migrations On Startup" Target="RUN_MIGRATIONS_ON_STARTUP" Default="true" Mode="" Description="Run Prisma database migrations automatically each time the container starts. Disable once your schema is stable if you'd rather run migrations manually." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
+  <Config Name="Allowed Emails" Target="ALLOWED_EMAILS" Default="" Mode="" Description="Optional comma-separated allowlist of exact addresses and/or *@domain rules restricting who may register. Leave blank to allow anyone who can reach the server." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="SMTP Host" Target="SMTP_HOST" Default="" Mode="" Description="SMTP server hostname, required for email verification." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="SMTP Port" Target="SMTP_PORT" Default="587" Mode="" Description="SMTP port (587 for TLS/STARTTLS, 465 for SSL)." Type="Variable" Display="advanced" Required="false" Mask="false">587</Config>
+  <Config Name="SMTP Secure" Target="SMTP_SECURE" Default="false" Mode="" Description="true for SSL on port 465, false for STARTTLS on 587." Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="SMTP User" Target="SMTP_USER" Default="" Mode="" Description="SMTP authentication username." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="SMTP Password" Target="SMTP_PASS" Default="" Mode="" Description="SMTP authentication password." Type="Variable" Display="advanced" Required="false" Mask="true"></Config>
+  <Config Name="SMTP From" Target="SMTP_FROM" Default="" Mode="" Description="From address for outgoing emails, e.g. &quot;Super Productivity Sync&quot; &lt;noreply@your-domain.com&gt;" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+</Container>
