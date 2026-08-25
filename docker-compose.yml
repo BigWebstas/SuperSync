@@ -34,6 +34,7 @@ services:
       - WEBAUTHN_RP_ID=${WEBAUTHN_RP_ID:-localhost}
       - WEBAUTHN_ORIGIN=${WEBAUTHN_ORIGIN:-http://localhost:1900}
       - ALLOWED_EMAILS=${ALLOWED_EMAILS:-}
+      - SUPERSYNC_DEFAULT_STORAGE_QUOTA_BYTES=${SUPERSYNC_DEFAULT_STORAGE_QUOTA_BYTES:-}
     ports:
       - '1900:1900'
     volumes:
