@@ -13,28 +13,6 @@ There are no upstream release tags — `master` is the only source of truth. Thi
 rebuilds from `master` and tags the result with the upstream commit SHA and a build date,
 in addition to `latest`.
 
-## Building
-
-```bash
-./build.sh              # build only, tags: latest, <upstream-sha>, <YYYYMMDD>
-PUSH=true ./build.sh     # build and push to Docker Hub
-IMAGE=myuser/supersync ./build.sh   # override the target image name
-```
-
-The script does a shallow clone of upstream `master` into a temp dir and builds using
-upstream's own `packages/super-sync-server/Dockerfile` unmodified — nothing here forks
-or patches their source.
-
-## Automated builds
-
-`.github/workflows/build-and-push.yml` rebuilds and pushes daily (06:00 UTC) and on
-manual dispatch, tracking upstream `master`. It needs two repo secrets:
-
-- `DOCKERHUB_USERNAME` — your Docker Hub username
-- `DOCKERHUB_TOKEN` — a Docker Hub access token (Account Settings → Security →
-  New Access Token; needs Read & Write)
-
-The image is pushed to `<DOCKERHUB_USERNAME>/supersync`.
 
 ## Running
 
