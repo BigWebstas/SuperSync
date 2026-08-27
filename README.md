@@ -23,6 +23,11 @@ docker compose up -d
 
 `docker-compose.yml` is a trimmed copy of upstream's compose file (no Caddy/TLS —
 front it with your own reverse proxy) pointed at `webstas/supersync:latest` by default.
+
+Running it behind IIS on Windows Server? See
+[`docs/reverse-proxy-iis.md`](docs/reverse-proxy-iis.md) for a URL Rewrite + ARR
+walkthrough and a ready-made [`web.config`](docs/iis/web.config).
+
 See upstream's
 [env.example](https://github.com/super-productivity/super-productivity/blob/master/packages/super-sync-server/env.example)
 for the full list of supported environment variables.
