@@ -42,3 +42,11 @@ container first, then set the **Database URL** field.
 - No Terms of Service / privacy policy is baked in — upstream ships none. Set the
   `PRIVACY_*` variables to generate one for your deployment.
 - `latest` tracks upstream `master`, which has no stability guarantee.
+- Upstream's sync upload rate limits are compiled in, with no runtime env var:
+  100 uploads/min on `POST /api/sync/ops` (enforced per user *and* per IP), plus
+  a 500-request / 15-minute global per-IP cap. Behind a reverse proxy every
+  client shares one IP, so the per-IP caps bite sooner. `build.sh` can raise them
+  at build time — `SYNC_UPLOAD_RATE_LIMIT_MAX=1000 ./build.sh` and/or
+  `SYNC_GLOBAL_RATE_LIMIT_MAX=5000 ./build.sh`. Both are unset by default, so the
+  published image stays an unmodified rebuild; each patch is verified and fails
+  the build if upstream moves the target line.
