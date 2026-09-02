@@ -37,7 +37,7 @@ No Terms of Service / privacy policy is baked in; see the PRIVACY_* variables in
 
   <Requires>A separate PostgreSQL 16 (or compatible) database, reachable from this container, is required before starting.</Requires>
 
-  <Date>2026-08-25</Date>
+  <Date>2026-09-01</Date>
 
   <MinVer>6.1</MinVer>
   <MaxVer>7.3</MaxVer>
@@ -59,6 +59,8 @@ No Terms of Service / privacy policy is baked in; see the PRIVACY_* variables in
   <Config Name="Run Migrations On Startup" Target="RUN_MIGRATIONS_ON_STARTUP" Default="true" Mode="" Description="Run Prisma database migrations automatically each time the container starts. Disable once your schema is stable if you'd rather run migrations manually." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
   <Config Name="Allowed Emails" Target="ALLOWED_EMAILS" Default="" Mode="" Description="Optional comma-separated allowlist of exact addresses and/or *@domain rules restricting who may register. Leave blank to allow anyone who can reach the server." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
   <Config Name="Default Storage Quota (Bytes)" Target="SUPERSYNC_DEFAULT_STORAGE_QUOTA_BYTES" Default="104857600" Mode="" Description="Per-user storage quota in bytes applied to accounts created from now on (default 104857600 = 100MB). Existing accounts keep the quota they were created with; raising this does NOT widen anyone's existing quota. To change an existing user's quota, run: UPDATE users SET storage_quota_bytes = &lt;bytes&gt; WHERE email = '&lt;email&gt;'; against your Postgres database." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Sync Upload Rate Limit (max)" Target="SYNC_UPLOAD_RATE_LIMIT_MAX" Default="" Mode="" Description="Max POST /api/sync/ops requests per minute, enforced per user AND per source IP (upstream default 100). Upstream hardcodes this; this image reads it at startup. Behind a reverse proxy every client shares one IP, so the per-IP cap bites sooner than 100/user suggests — raise this if legitimate clients hit 429s. Leave blank for the upstream default." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Sync Global Rate Limit (max)" Target="SYNC_GLOBAL_RATE_LIMIT_MAX" Default="" Mode="" Description="Max requests per source IP across ALL routes per 15 minutes (upstream default 500). Upstream hardcodes this; this image reads it at startup. Raise alongside the upload limit when many users share one IP via a reverse proxy. Leave blank for the upstream default." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
 
   <Config Name="SMTP Host" Target="SMTP_HOST" Default="" Mode="" Description="SMTP server hostname, required for email verification." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
   <Config Name="SMTP Port" Target="SMTP_PORT" Default="587" Mode="" Description="SMTP port (587 for TLS/STARTTLS, 465 for SSL)." Type="Variable" Display="advanced" Required="false" Mask="false">587</Config>

@@ -35,6 +35,10 @@ services:
       - WEBAUTHN_ORIGIN=${WEBAUTHN_ORIGIN:-http://localhost:1900}
       - ALLOWED_EMAILS=${ALLOWED_EMAILS:-}
       - SUPERSYNC_DEFAULT_STORAGE_QUOTA_BYTES=${SUPERSYNC_DEFAULT_STORAGE_QUOTA_BYTES:-}
+      # Sync rate limits — this image reads them at startup (upstream hardcodes
+      # them). Empty = upstream default (100/min upload, 500/15min global per-IP).
+      - SYNC_UPLOAD_RATE_LIMIT_MAX=${SYNC_UPLOAD_RATE_LIMIT_MAX:-}
+      - SYNC_GLOBAL_RATE_LIMIT_MAX=${SYNC_GLOBAL_RATE_LIMIT_MAX:-}
     ports:
       - '1900:1900'
     volumes:
