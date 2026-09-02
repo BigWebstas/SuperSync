@@ -42,15 +42,18 @@ container first, then set the **Database URL** field.
 - No Terms of Service / privacy policy is baked in — upstream ships none. Set the
   `PRIVACY_*` variables to generate one for your deployment.
 - `latest` tracks upstream `master`, which has no stability guarantee.
-- Upstream's sync rate limits are compiled in with no runtime env var: 100
-  uploads/min on `POST /api/sync/ops` (enforced per user *and* per IP), plus a
-  500-request / 15-minute global per-IP cap. Behind a reverse proxy every client
-  shares one IP, so the per-IP caps bite sooner. `build.sh` rewrites those
-  constants into `process.env` reads, so this image honours two env vars set at
-  container start — no rebuild needed:
-  - `SYNC_UPLOAD_RATE_LIMIT_MAX` — the per-user and per-IP `POST /api/sync/ops`
-    cap (default 100/min).
-  - `SYNC_GLOBAL_RATE_LIMIT_MAX` — the global per-IP cap (default 500/15min).
+- Upstream's sync rate limits are compiled in with no runtime env var. Behind a
+  reverse proxy every client shares one IP, so the per-IP caps bite sooner than
+  the per-user numbers suggest. `build.sh` rewrites those constants into
+  `process.env` reads, so this image honours these env vars set at container
+  start — no rebuild needed:
+  - `SYNC_UPLOAD_RATE_LIMIT_MAX` — per-user and per-IP `POST /api/sync/ops` cap
+    (default 100/min).
+  - `SYNC_GLOBAL_RATE_LIMIT_MAX` — global per-IP cap across all routes
+    (default 500/15min).
+  - `SYNC_SNAPSHOT_RATE_LIMIT_MAX` — per-IP `POST /api/sync/snapshot` cap
+    (default 10/15min). Snapshot uploads are full-state and heavy; a client
+    that keeps hitting this is usually stuck in a resync loop worth diagnosing.
 
   Set them in `.env` / your compose file. Unset, empty, or non-numeric falls
   back to the upstream default, so a stock deployment behaves exactly like
